@@ -1,0 +1,10 @@
+[package]
+name = "parallel"
+version = "0.1.0"
+authors = ["Amish Shah <amishshah.2k@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "2.33.3", features=["yaml"] }

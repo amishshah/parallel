@@ -1,0 +1,14 @@
+name: parallel
+version: "0.1.0"
+author: Amish Shah
+about: Runs system commands in parallel, maintaining the order of their outputs
+args:
+    - MAX_PARALLEL:
+        short: n
+        long: max-parallel
+        help: Sets the maximum number of parallel commands (defaults to 4)
+        takes_value: true
+    - INPUT:
+        help: The system commands to run in parallel
+        required: true
+        multiple: true
