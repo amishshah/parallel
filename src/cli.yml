@@ -1,5 +1,5 @@
 name: parallel
-version: "0.1.0"
+version: "0.2.0"
 author: Amish Shah
 about: Runs system commands in parallel, maintaining the order of their outputs
 args:
