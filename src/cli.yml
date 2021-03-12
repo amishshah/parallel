@@ -3,6 +3,14 @@ version: "0.1.0"
 author: Amish Shah
 about: Runs system commands in parallel, maintaining the order of their outputs
 args:
+    - SHELL:
+        short: s
+        long: shell
+        help: Run all commands in the given shell
+        takes_value: true
+        possible_values:
+            - none
+            - bash
     - MAX_PARALLEL:
         short: n
         long: max-parallel

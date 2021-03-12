@@ -5,6 +5,21 @@ use std::{
     process::{exit, Child, Command as ProcessCommand, Stdio},
 };
 
+enum Shell {
+    None,
+    Bash,
+}
+
+impl From<&str> for Shell {
+    fn from(value: &str) -> Self {
+        match value {
+            "bash" => Self::Bash,
+            "none" => Self::None,
+            x => panic!(format!("'{}' is not a valid shell value", x)),
+        }
+    }
+}
+
 #[derive(Debug)]
 enum ProgramError<'a> {
     EmptyCommand,
@@ -29,16 +44,22 @@ struct Command<'a> {
 }
 
 impl<'a> Command<'a> {
-    fn from(feature: &'a str) -> Result<Command, ProgramError> {
-        let parts: Vec<&str> = feature.split_whitespace().collect();
-
-        if parts.is_empty() {
-            Err(ProgramError::EmptyCommand)
-        } else {
+    fn from(feature: &'a str, shell: &'a Shell) -> Result<Command<'a>, ProgramError<'a>> {
+        if let Shell::Bash = shell {
             Ok(Command {
-                program: parts[0],
-                args: parts[1..].into(),
+                program: "bash",
+                args: vec!["-c", feature],
             })
+        } else {
+            let parts: Vec<&str> = feature.split_whitespace().collect();
+            if parts.is_empty() {
+                Err(ProgramError::EmptyCommand)
+            } else {
+                Ok(Command {
+                    program: parts[0],
+                    args: parts[1..].into(),
+                })
+            }
         }
     }
 
@@ -62,6 +83,9 @@ fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
+    let shell: String = matches.value_of("SHELL").unwrap_or("none").parse().unwrap();
+    let shell = Shell::from(&shell[..]);
+
     let max_parallel = matches
         .value_of("MAX_PARALLEL")
         .unwrap_or("4")
@@ -82,7 +106,7 @@ fn main() {
 
     while !children.is_empty() || !commands.is_empty() {
         if children.len() != max_parallel && !commands.is_empty() {
-            match Command::from(commands.remove(0)) {
+            match Command::from(commands.remove(0), &shell) {
                 Ok(command) => {
                     match command.spawn() {
                         Ok(child) => children.push(child),

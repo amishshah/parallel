@@ -14,7 +14,15 @@ Specify the maximum number of parallel tasks with the `-n` flag (defaults to 4):
 
 ```bash
 # n=1 is equivalent to running tasks sequentially
-$ parallel -n 1 task1 task2 task3
+# result: 1 2 3
+$ parallel -n 1 "echo 1" "echo 2" "echo 3"
+```
+
+Run more complex tasks in bash:
+
+```bash
+# result: hi bye
+$ parallel --shell=bash "sleep 1; echo hi" "echo bye"
 ```
 
 If every task exits with an error code, then `parallel` will exit with code 1.
