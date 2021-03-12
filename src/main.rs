@@ -15,7 +15,7 @@ impl From<&str> for Shell {
         match value {
             "bash" => Self::Bash,
             "none" => Self::None,
-            x => panic!(format!("'{}' is not a valid shell value", x)),
+            x => panic!("'{}' is not a valid shell value", x),
         }
     }
 }
